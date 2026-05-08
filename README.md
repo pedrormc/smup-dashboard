@@ -7,7 +7,7 @@ controle sobre identidade visual, regras de negócio e performance.
 > **Stack:** Next.js 15 (App Router) · React 19 · TypeScript estrito · Tailwind v4 ·
 > Recharts · papaparse · date-fns. Hospedado em Vercel.
 >
-> **Mantido por:** Singular Group · Pedro Roberto Miranda de Carvalho (CTO).
+> **Mantido por:** Singular Group · Pedro Roberto Miranda de Carvalho.
 
 ---
 
