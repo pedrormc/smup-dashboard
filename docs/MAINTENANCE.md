@@ -13,9 +13,11 @@ Rotinas de operação para manter o dashboard saudável.
 - [ ] Conferir se as taxas de `TB_Taxas_Conversao` estão atualizadas. Cada
       transição é um `COUNTIFS` na planilha — se alguém renomear uma fase, a
       fórmula quebra silenciosamente.
-- [ ] Conferir se há novos valores corrompidos em `fase_atual` (similares aos
-      `1330117664` / `1330117663`). Heurística: qualquer valor de fase
-      inteiramente numérico é suspeito.
+- [ ] Conferir se há valores estranhos em `fase_atual` que não estão na lista
+      canônica de fases (Lead, Oportunidade, Diagnóstico Agendado, Confeccionar
+      Proposta, Proposta Agendada, Proposta Apresentada, Em Negociação, Fechado,
+      Perdido). Heurística: qualquer valor inteiramente numérico ou em formato
+      de data é suspeito — corrigir/limpar na planilha (não no código).
 
 ## Trimestral
 

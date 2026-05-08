@@ -2,7 +2,6 @@
  * Normalização das linhas brutas da planilha para os tipos de domínio.
  *
  * Toda regra de qualidade de dados vive aqui:
- *   - exclusão dos IDs corrompidos em fase_atual (1330117664, 1330117663)
  *   - normalização do campo `responsavel` (variações de Neidison, Clistones etc.)
  *   - normalização do campo `segmento` (vazios → "Não informado")
  *   - parse de datas em ISO (YYYY-MM-DD) e números em locale BR (vírgula decimal)
@@ -12,7 +11,6 @@
  */
 
 import { differenceInDays, parseISO } from "date-fns";
-import { CORRUPTED_PHASE_VALUES } from "@/lib/constants";
 import type {
   Historico,
   Negocio,
@@ -95,15 +93,10 @@ export function normalizeSegmento(raw: string): string {
     .join(" ");
 }
 
-function isCorruptedPhase(value: string): boolean {
-  return (CORRUPTED_PHASE_VALUES as readonly string[]).includes(value.trim());
-}
-
 export function transformNegocio(row: RawNegocio): Negocio | null {
   const dealId = (row.deal_id ?? "").trim();
   if (!dealId) return null;
   const faseAtual = (row.fase_atual ?? "").trim();
-  if (isCorruptedPhase(faseAtual)) return null;
 
   const dataCriacao = parseDate(row.data_criacao);
   const dataUltimaFase = parseDate(row.data_ultima_fase);

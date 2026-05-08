@@ -64,7 +64,7 @@ smup-dashboard/
 │       ├── kpis.ts ...................... cálculos puros das 14 métricas
 │       ├── filters.ts ................... aplicação dos filtros globais
 │       ├── format.ts .................... helpers locale BR
-│       ├── constants.ts ................. paleta, ordem do funil, IDs corrompidos
+│       ├── constants.ts ................. paleta e ordem do funil
 │       └── types.ts
 ├── .env.example ......................... template das envs
 ├── package.json

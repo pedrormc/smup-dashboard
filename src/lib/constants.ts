@@ -2,7 +2,7 @@
  * Constantes compartilhadas do dashboard SMUP.
  *
  * Identidade visual e regras de negócio centralizadas aqui — qualquer mudança de
- * paleta, ordem das fases ou IDs corrompidos deve ser feita NESTE arquivo.
+ * paleta ou ordem das fases deve ser feita NESTE arquivo.
  */
 
 export const COLORS = {
@@ -19,7 +19,7 @@ export const COLORS = {
 
 /**
  * Ordem canônica das fases ativas do funil (do topo ao fundo).
- * NÃO inclui "Perdido" (terminal) nem os IDs corrompidos.
+ * NÃO inclui "Perdido" (terminal).
  */
 export const FUNNEL_STAGES = [
   "Lead",
@@ -61,12 +61,6 @@ export const STAGE_WIDTHS: Record<FunnelStage, number> = {
   "Em Negociação": 28,
   Fechado: 18,
 };
-
-/**
- * IDs corrompidos descobertos na inspeção de 2026-05-07 — devem ser excluídos
- * de TODOS os visuais. Ver `docs/DATA-MODEL.md`.
- */
-export const CORRUPTED_PHASE_VALUES = ["1330117664", "1330117663"] as const;
 
 export const NAV_LINKS = [
   { href: "/", label: "Visão Executiva" },

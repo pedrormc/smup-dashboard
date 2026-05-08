@@ -13,7 +13,7 @@ Estado atual de cada negócio no CRM (HubSpot).
 | `nome_negocio` | string | `string` | |
 | `valor_contrato` | número | `number \| null` | Aceita "0" como null se vazio |
 | `data_criacao` | ISO `YYYY-MM-DD` | `Date \| null` | parseado por `date-fns/parseISO` |
-| `fase_atual` | string | `string` | **Linhas com `1330117664` ou `1330117663` são descartadas** |
+| `fase_atual` | string | `string` | Espera-se um dos valores canônicos abaixo; planilha limpa em 2026-05-08 |
 | `data_ultima_fase` | ISO `YYYY-MM-DD` | `Date \| null` | |
 | `proprietario` | string | — | Não usado no dashboard |
 | `responsavel` | string | `string` + `responsavelNormalizado` | Ver regra abaixo |
@@ -37,8 +37,6 @@ Estado atual de cada negócio no CRM (HubSpot).
 | `Em Negociação` | 7 |
 | `Fechado` | 8 (ganho) |
 | `Perdido` | terminal |
-| ~~`1330117664`~~ | corrompido — descartado |
-| ~~`1330117663`~~ | corrompido — descartado |
 
 A ordem canônica vive em `src/lib/constants.ts → FUNNEL_STAGES`. **Mudar a ordem
 ou adicionar fases requer atualizar essa constante.**
@@ -92,7 +90,6 @@ export function taxaPorTransicao(historico: Historico[]) {
 
 | Regra | Onde está | Por quê |
 |---|---|---|
-| Descartar `fase_atual ∈ {1330117664, 1330117663}` | `transforms.ts → transformNegocio` | IDs corrompidos identificados em 2026-05-07 |
 | Normalizar `responsavel` via regex | `transforms.ts → normalizeResponsavel` | 8 variações de "Neidison" + typos + casos como "Clis/Neidison" |
 | Normalizar `segmento` (vazio → "Não informado") | `transforms.ts → normalizeSegmento` | ~80% das linhas têm segmento vazio |
 | Parse de número aceitando vírgula decimal BR | `transforms.ts → parseNumber` | `TB_Taxas_Conversao.taxa` está em locale BR |
