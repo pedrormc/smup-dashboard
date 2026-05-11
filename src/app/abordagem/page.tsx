@@ -56,18 +56,20 @@ export default async function AbordagemPage({
       <FilterBar responsaveis={responsaveis} segmentos={segmentos} />
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <Panel title="Oportunidades por segmento" subtitle="Contagem de negócios">
+        <Panel title="Oportunidades por segmento" subtitle="Contagem de negócios · role pra ver todos">
           <HorizontalBarChart
             data={oportunidadesPorSegmento(filtered)}
             format="int"
             color={COLORS.secondary}
+            maxContainerHeight={480}
           />
         </Panel>
-        <Panel title="Faturamento por segmento" subtitle="Apenas negócios fechados">
+        <Panel title="Faturamento por segmento" subtitle="Apenas negócios fechados · role pra ver todos">
           <HorizontalBarChart
             data={faturamentoPorSegmento(filtered)}
             format="currency"
             color={COLORS.secondary}
+            maxContainerHeight={480}
           />
         </Panel>
       </section>

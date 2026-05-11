@@ -26,16 +26,45 @@ export function applyFilters(rows: Negocio[], filters: DashboardFilters): Negoci
   });
 }
 
-export function uniqueResponsaveis(rows: Negocio[]): string[] {
-  const set = new Set<string>();
-  for (const r of rows) set.add(r.responsavelNormalizado);
-  return Array.from(set).sort((a, b) => a.localeCompare(b, "pt-BR"));
+export interface FilterOption {
+  value: string;
+  count: number;
 }
 
-export function uniqueSegmentos(rows: Negocio[]): string[] {
-  const set = new Set<string>();
-  for (const r of rows) set.add(r.segmentoNormalizado);
-  return Array.from(set).sort((a, b) => a.localeCompare(b, "pt-BR"));
+/**
+ * Lista de responsáveis com contagem de negócios.
+ * Ordenado por contagem desc, "Sem responsável" sempre no fim. Apenas
+ * responsáveis com >= 1 negócio aparecem (efetivamente sempre todos os
+ * que vêm normalizados).
+ */
+export function uniqueResponsaveis(rows: Negocio[]): FilterOption[] {
+  const map = new Map<string, number>();
+  for (const r of rows) {
+    map.set(r.responsavelNormalizado, (map.get(r.responsavelNormalizado) ?? 0) + 1);
+  }
+  return Array.from(map.entries())
+    .map(([value, count]) => ({ value, count }))
+    .sort((a, b) => {
+      if (a.value === "Sem responsável") return 1;
+      if (b.value === "Sem responsável") return -1;
+      if (b.count !== a.count) return b.count - a.count;
+      return a.value.localeCompare(b.value, "pt-BR");
+    });
+}
+
+export function uniqueSegmentos(rows: Negocio[]): FilterOption[] {
+  const map = new Map<string, number>();
+  for (const r of rows) {
+    map.set(r.segmentoNormalizado, (map.get(r.segmentoNormalizado) ?? 0) + 1);
+  }
+  return Array.from(map.entries())
+    .map(([value, count]) => ({ value, count }))
+    .sort((a, b) => {
+      if (a.value === "Não informado") return 1;
+      if (b.value === "Não informado") return -1;
+      if (b.count !== a.count) return b.count - a.count;
+      return a.value.localeCompare(b.value, "pt-BR");
+    });
 }
 
 export function parseFiltersFromSearchParams(

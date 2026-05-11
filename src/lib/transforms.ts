@@ -66,17 +66,25 @@ function parseBool(value: string | null | undefined): boolean {
  *     (typo), "Clis/Neidison" → "Neidison Paiva"
  *   - "Clistones", "Clistones " (espaço) → "Clistones"
  *   - "Pedro Roberto", "Robertin" → "Pedro Roberto"
+ *   - "Fabiany Vieira (Suprimentos) +55 27 98116-7771" → "Fabiany Vieira"
+ *     (strip parênteses descritivos e telefones)
  *   - vazio / null → "Sem responsável"
  *   - resto → trim() literal
  */
 export function normalizeResponsavel(raw: string): string {
-  const trimmed = (raw ?? "").trim();
-  if (!trimmed) return "Sem responsável";
-  const upper = trimmed.toUpperCase();
+  const stripped = (raw ?? "")
+    // remove qualquer "+55 27 98116-7771" ou variações
+    .replace(/\+?\d{1,3}[\s.-]?\d{2,4}[\s.-]?\d{3,5}[\s.-]?\d{3,5}/g, "")
+    // remove parênteses descritivos tipo "(Suprimentos)"
+    .replace(/\([^)]*\)/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!stripped) return "Sem responsável";
+  const upper = stripped.toUpperCase();
   if (/NEIDIS.N/.test(upper)) return "Neidison Paiva";
   if (/CLIS/.test(upper)) return "Clistones";
   if (upper === "PEDRO ROBERTO" || upper === "ROBERTIN") return "Pedro Roberto";
-  return trimmed;
+  return stripped;
 }
 
 /**

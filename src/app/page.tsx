@@ -1,12 +1,13 @@
 /**
  * Página 1 — Visão Executiva.
  *
- * 4 KPIs (V1-V4) + 2 séries temporais (V5-V6) + ranking responsável (V7).
- * Filtros globais via querystring. Toda a leitura de dados é server-side.
+ * 4 KPIs (V1-V4) + ranking responsável (V7) com espaço pleno +
+ * 2 séries temporais (V5-V6) lado a lado.
+ *
+ * Snapshot do funil foi removido daqui — vive só no /funil pra evitar duplicação.
  */
 
 import { FilterBar } from "@/components/filter-bar";
-import { FunnelChart } from "@/components/funnel-chart";
 import { HorizontalBarChart } from "@/components/horizontal-bar-chart";
 import { KpiCard } from "@/components/kpi-card";
 import { Panel } from "@/components/panel";
@@ -79,42 +80,27 @@ export default async function VisaoExecutivaPage({
         />
       </section>
 
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <Panel
-          title="Leads ao longo do tempo"
-          subtitle="Negócios criados por mês"
-          className="lg:col-span-2"
-        >
-          <TimeSeriesChart data={leadsAoLongoDoTempo(filtered)} type="count" />
-        </Panel>
+      <section className="grid grid-cols-1">
         <Panel
           title="Faturamento por responsável"
           subtitle="Soma do valor de contratos fechados"
         >
-          <HorizontalBarChart data={faturamentoPorResponsavel(filtered)} format="currency" />
+          <HorizontalBarChart
+            data={faturamentoPorResponsavel(filtered)}
+            format="currency"
+            height={360}
+          />
         </Panel>
       </section>
 
-      <section className="grid grid-cols-1">
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <Panel title="Leads ao longo do tempo" subtitle="Negócios criados por mês">
+          <TimeSeriesChart data={leadsAoLongoDoTempo(filtered)} type="count" />
+        </Panel>
         <Panel title="Faturamento ao longo do tempo" subtitle="Soma por mês de fechamento">
           <TimeSeriesChart data={faturamentoAoLongoDoTempo(filtered)} type="currency" />
         </Panel>
       </section>
-
-      <FunnelPreview filtered={filtered} />
     </div>
-  );
-}
-
-import { contagemPorFase } from "@/lib/kpis";
-import { STAGE_LABELS, STAGE_WIDTHS } from "@/lib/constants";
-import type { Negocio } from "@/lib/types";
-
-function FunnelPreview({ filtered }: { filtered: Negocio[] }) {
-  const data = contagemPorFase(filtered, STAGE_LABELS, STAGE_WIDTHS);
-  return (
-    <Panel title="Snapshot do funil" subtitle="Quantidade atual em cada fase ativa">
-      <FunnelChart data={data} />
-    </Panel>
   );
 }

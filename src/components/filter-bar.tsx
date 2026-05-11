@@ -3,10 +3,11 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useTransition } from "react";
 import { COLORS } from "@/lib/constants";
+import type { FilterOption } from "@/lib/filters";
 
 interface FilterBarProps {
-  responsaveis: string[];
-  segmentos: string[];
+  responsaveis: FilterOption[];
+  segmentos: FilterOption[];
 }
 
 const FIELD_KEYS = ["responsavel", "segmento", "from", "to"] as const;
@@ -62,8 +63,8 @@ export function FilterBar({ responsaveis, segmentos }: FilterBarProps) {
         >
           <option value="">Todos</option>
           {responsaveis.map((r) => (
-            <option key={r} value={r}>
-              {r}
+            <option key={r.value} value={r.value}>
+              {r.value} ({r.count})
             </option>
           ))}
         </select>
@@ -77,8 +78,8 @@ export function FilterBar({ responsaveis, segmentos }: FilterBarProps) {
         >
           <option value="">Todos</option>
           {segmentos.map((s) => (
-            <option key={s} value={s}>
-              {s}
+            <option key={s.value} value={s.value}>
+              {s.value} ({s.count})
             </option>
           ))}
         </select>
@@ -105,10 +106,10 @@ export function FilterBar({ responsaveis, segmentos }: FilterBarProps) {
         <button
           type="button"
           onClick={clearAll}
-          className="text-sm px-3 py-2 rounded-md border hover:bg-gray-50 transition"
-          style={{ borderColor: COLORS.border, color: COLORS.primary }}
+          className="text-sm px-3 py-2 rounded-md font-medium text-white transition-opacity hover:opacity-90"
+          style={{ backgroundColor: COLORS.danger }}
         >
-          Limpar ({activeCount})
+          Limpar
         </button>
       )}
       {isPending && <span className="text-xs text-gray-500">atualizando…</span>}

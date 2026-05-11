@@ -39,11 +39,13 @@ export function TimeSeriesChart({ data, type, height = 280 }: TimeSeriesChartPro
             labelFormatter={(l) => `Mês: ${l}`}
           />
           <Area
-            type="monotone"
+            type="linear"
             dataKey="valor"
             stroke={COLORS.secondary}
             strokeWidth={2}
             fill="url(#ts-fill)"
+            dot={{ r: 3, fill: COLORS.secondary, stroke: COLORS.secondary }}
+            activeDot={{ r: 5, fill: COLORS.secondary, stroke: "#FFFFFF", strokeWidth: 2 }}
           />
         </AreaChart>
       </ResponsiveContainer>

@@ -82,7 +82,7 @@ export default async function FunilComercialPage({
         </Panel>
         <Panel
           title="Taxa de conversão entre etapas"
-          subtitle="Calculadas em TB_Taxas_Conversao (planilha)"
+          subtitle="Métricas globais da planilha (TB_Taxas_Conversao) — não respondem aos filtros"
         >
           <HorizontalBarChart
             data={taxasData}

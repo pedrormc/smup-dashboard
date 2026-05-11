@@ -14,7 +14,7 @@ export function RefreshIndicator({ fetchedAt, totalNegocios, totalHistorico }: R
       style={{ color: COLORS.muted }}
     >
       <span>
-        <strong className="font-semibold">Última sincronização:</strong> {formatDateTime(fetchedAt)}
+        <strong className="font-semibold">Última sincronização:</strong> {formatDateTime(fetchedAt)} (BRT)
       </span>
       <span>
         <strong className="font-semibold">Negócios:</strong> {totalNegocios.toLocaleString("pt-BR")}
