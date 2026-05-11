@@ -37,9 +37,75 @@ npm run dev
 ```
 
 Abrir <http://localhost:3000>. Sem nenhuma configuração extra: a planilha já está
-pública e os IDs estão hard-coded como default em `src/lib/sheets.ts`.
+pública e os IDs estão hard-coded como default em `src/lib/sheets.ts`. Para
+trocar de planilha ou subir um clone do dashboard, configure as variáveis
+descritas abaixo.
 
-Para mexer em outra planilha, ajustar `SMUP_SHEET_ID` e os 3 GIDs no `.env.local`.
+---
+
+## Variáveis de ambiente
+
+Todas as variáveis vivem em `.env.local` (dev) ou no painel do Vercel (prod).
+Copie o template como ponto de partida:
+
+```bash
+cp .env.example .env.local
+```
+
+Conteúdo completo de `.env.example`:
+
+```bash
+# === SMUP Dashboard · variáveis de ambiente ===
+
+# ID da planilha Google Sheets. Extraído da URL:
+# https://docs.google.com/spreadsheets/d/<ESTE_ID>/edit
+SMUP_SHEET_ID=1CZ4tfnyTcR9iFJujZhHa2aNHFajZc8zHdB21DEXgwfk
+
+# GIDs (IDs numéricos) de cada aba. Pra descobrir, abra a planilha e clique
+# em cada aba — o número após "#gid=" na URL é o GID daquela aba.
+SMUP_GID_NEGOCIOS=0
+SMUP_GID_HISTORICO=1711054039
+SMUP_GID_TAXAS=41696639
+
+# Tempo de cache em segundos (ISR). Padrão 300 = 5min.
+# Setar 0 desativa cache — não recomendado em prod, estoura cota do Sheets.
+SMUP_REVALIDATE_SECONDS=300
+
+# Token (string aleatória) que protege o endpoint POST /api/revalidate.
+# Gerar com: openssl rand -hex 32
+# No PowerShell: [guid]::NewGuid().ToString("N") + [guid]::NewGuid().ToString("N")
+REVALIDATE_TOKEN=changeme
+
+# URL pública do site. Em prod, o Vercel preenche automaticamente.
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+### Como obter cada credencial
+
+| Variável | Onde encontrar | Obrigatória |
+|---|---|---|
+| `SMUP_SHEET_ID` | Na URL da planilha — copie o trecho entre `/d/` e `/edit`. Ex: `docs.google.com/spreadsheets/d/`**`1CZ4tfnyTcR9iFJujZhHa2aNHFajZc8zHdB21DEXgwfk`**`/edit` | sim |
+| `SMUP_GID_NEGOCIOS` | Clique na aba `TB_Negocios_Atual` na planilha → a URL muda pra `...#gid=0`. O número após `#gid=` é o GID. | sim |
+| `SMUP_GID_HISTORICO` | Clique em `TB_Historico_Movimentacao` → copie o `gid` da URL. | sim |
+| `SMUP_GID_TAXAS` | Clique em `TB_Taxas_Conversao` → copie o `gid` da URL. | sim |
+| `SMUP_REVALIDATE_SECONDS` | Sem credencial — apenas um número (segundos). Padrão `300` (5min). | não |
+| `REVALIDATE_TOKEN` | Você gera. Cole o **mesmo valor** no Vercel e no Apps Script (se usar webhook do Sheets). | sim, se for usar webhook |
+| `NEXT_PUBLIC_SITE_URL` | Localmente `http://localhost:3000`; em prod o Vercel injeta `https://<projeto>.vercel.app`. | não |
+
+### Pré-requisitos da planilha
+
+A planilha **precisa estar pública** em modo "Qualquer pessoa com o link pode
+ver". Caminho: na planilha → **Compartilhar** → "Acesso geral" → "Qualquer
+pessoa com o link" → permissão "Visualizador".
+
+Sem isso, o fetch CSV retorna 401/403 e o build quebra com o erro descrito em
+[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
+
+### Configurar no Vercel
+
+Painel **Project Settings → Environment Variables** → cole as 7 variáveis
+acima nas 3 environments (Production, Preview, Development). Detalhes
+adicionais em [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ---
 
@@ -57,7 +123,8 @@ smup-dashboard/
 │   └── ADDING-VISUALS.md ................ como criar um 15º visual
 ├── src/
 │   ├── app/ ............................. App Router (3 páginas + 2 APIs)
-│   ├── components/ ...................... charts, KPIs, filtros
+│   ├── components/
+│   │   └── README.md .................... o que cada componente faz, dados que consome
 │   └── lib/
 │       ├── sheets.ts .................... fetch + cache CSV
 │       ├── transforms.ts ................ normalização (regex responsável etc.)
@@ -125,6 +192,7 @@ Há **três formas** dos dados serem atualizados em produção:
 |---|---|
 | Entender as decisões arquiteturais | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | Mexer no schema dos dados | [docs/DATA-MODEL.md](docs/DATA-MODEL.md) |
+| Entender o que cada componente da UI faz | [src/components/README.md](src/components/README.md) |
 | Subir uma cópia em outro Vercel | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) |
 | Adicionar um novo gráfico | [docs/ADDING-VISUALS.md](docs/ADDING-VISUALS.md) |
 | Resolver um erro 500 / build quebrado | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) |

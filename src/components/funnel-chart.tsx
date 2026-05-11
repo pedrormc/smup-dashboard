@@ -7,8 +7,24 @@ interface FunnelChartProps {
 }
 
 /**
- * Funil simulado em 8 barras horizontais centradas com largura decrescente,
- * espelhando a planilha original. Cada barra mostra rótulo + contagem.
+ * Funil visual — V10. Renderiza 8 barras horizontais centradas com
+ * largura decrescente do topo ao fundo, espelhando o visual da
+ * planilha original do Looker Studio.
+ *
+ * Origem do dado: coluna `fase_atual` de TB_Negocios_Atual da planilha.
+ *
+ * Cálculo (em src/lib/kpis.ts → `contagemPorFase`):
+ *   1. COUNT(deal_id) GROUP BY fase_atual sobre as linhas já filtradas
+ *   2. Mapeia pra ordem canônica FUNNEL_STAGES (Lead → Fechado),
+ *      preenchendo 0 onde não há negócio
+ *   3. NÃO inclui "Perdido" (fase terminal, exibida em V9 separadamente)
+ *
+ * As larguras (%) das barras NÃO refletem o dado — vêm fixas de
+ * STAGE_WIDTHS em src/lib/constants.ts (Lead=100%, Oportunidade=90%,
+ * ..., Fechado=18%). Servem apenas pro efeito visual de funil.
+ *
+ * Renderização: só Tailwind + flex, sem dependência do Recharts.
+ * Cada barra tem `min-height: 44px` (target de toque mobile).
  */
 export function FunnelChart({ data }: FunnelChartProps) {
   return (

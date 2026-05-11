@@ -1,5 +1,15 @@
 "use client";
 
+/**
+ * Header global sticky com logo "S" da SMUP + 3 tabs de navegação:
+ *   - "/"            → Visão Executiva (V1-V7)
+ *   - "/funil"       → Funil Comercial (V8-V11)
+ *   - "/abordagem"   → Abordagem & Velocidade (V12-V14)
+ *
+ * A tab ativa é destacada com fundo COLORS.primary. NAV_LINKS vem de
+ * src/lib/constants.ts. Nenhum dado consumido da planilha.
+ */
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { COLORS, NAV_LINKS } from "@/lib/constants";

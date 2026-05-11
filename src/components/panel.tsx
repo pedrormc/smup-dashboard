@@ -1,3 +1,15 @@
+/**
+ * Wrapper visual padrão pros gráficos: card branco com borda suave,
+ * sombra discreta, título em destaque e subtítulo opcional. Composição
+ * pura — não consome dados, não faz cálculo.
+ *
+ * Padrão de uso:
+ *
+ *   <Panel title="Faturamento por responsável" subtitle="Apenas fechados">
+ *     <HorizontalBarChart data={...} format="currency" />
+ *   </Panel>
+ */
+
 import type { ReactNode } from "react";
 import { COLORS } from "@/lib/constants";
 

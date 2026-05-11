@@ -1,5 +1,42 @@
 "use client";
 
+/**
+ * Gráfico genérico de barras horizontais ordenadas por valor desc.
+ * Suporta 4 formatos de número e scroll interno pra listas longas.
+ *
+ * Usado em 5 visuais distintos:
+ *   ┌─────┬─────────────────────────────┬──────────────────────────────────────────────────────────────────┐
+ *   │ V7  │ Faturamento por responsável │ SUM(valor_contrato) GROUP BY responsavel_normalizado             │
+ *   │     │                             │ WHERE fase = "Fechado"                                           │
+ *   │ V11 │ Taxa entre etapas           │ leitura direta da aba TB_Taxas_Conversao (pré-agregada)          │
+ *   │     │                             │ NÃO responde aos filtros — é métrica global da planilha          │
+ *   │ V12 │ Oportunidades por segmento  │ COUNT(deal_id) GROUP BY segmento_normalizado                     │
+ *   │ V13 │ Faturamento por segmento    │ SUM(valor_contrato) GROUP BY segmento_normalizado                │
+ *   │     │                             │ WHERE fase = "Fechado"                                           │
+ *   │ V14 │ Tempo médio por etapa       │ AVG(tempo_na_fase) GROUP BY fase_anterior                        │
+ *   │     │                             │ FROM TB_Historico_Movimentacao, filtrado pelos deal_id ativos    │
+ *   └─────┴─────────────────────────────┴──────────────────────────────────────────────────────────────────┘
+ *
+ * Origem do dado:
+ *   - V7, V12, V13: TB_Negocios_Atual (colunas responsavel, segmento,
+ *     valor_contrato, fase_atual).
+ *   - V11: TB_Taxas_Conversao (colunas transicao, taxa).
+ *   - V14: TB_Historico_Movimentacao (coluna tempo_na_fase).
+ *
+ * Cada uma dessas agregações vive em src/lib/kpis.ts e retorna
+ * `{ label, valor }[]` já ordenado. O componente só renderiza.
+ *
+ * Props:
+ *   - `data: { label, valor }[]`        — agregado, ordenado
+ *   - `format: "currency"|"int"|"decimal"|"percent"` — formato do número
+ *   - `color?: string`                  — default COLORS.primary
+ *   - `height?: number`                 — altura mínima do canvas, default 320
+ *   - `maxContainerHeight?: number`     — quando definido, ativa SCROLL
+ *     INTERNO se `data.length * 36 + 40` excede esse valor. Mantém todas
+ *     as barras com 36px de altura legível. Usado em V12 e V13 (lista
+ *     longa de tipos de clínica — > 30 segmentos).
+ */
+
 import {
   Bar,
   BarChart,

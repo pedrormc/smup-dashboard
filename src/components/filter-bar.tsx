@@ -1,5 +1,37 @@
 "use client";
 
+/**
+ * Barra de filtros GLOBAIS — afeta todos os visuais da página atual (exceto
+ * V11, que vem pré-agregado da planilha).
+ *
+ * Controles:
+ *   - Responsável (select)   → match exato com `responsavelNormalizado`
+ *   - Segmento (select)      → match exato com `segmentoNormalizado`
+ *   - De / Até (date)        → filtra por `data_criacao` do negócio
+ *
+ * Estado vive na QUERYSTRING (`?responsavel=Charles&segmento=Hospital`),
+ * então o link é compartilhável. Mudou um select? `router.push(...)` →
+ * o Server Component pai re-renderiza tudo com os dados filtrados.
+ *
+ * Origem dos dados (props):
+ *   - `responsaveis: FilterOption[]` ← `uniqueResponsaveis(dataset.negocios)`
+ *   - `segmentos: FilterOption[]`    ← `uniqueSegmentos(dataset.negocios)`
+ *
+ * Cada `FilterOption` traz `{ value, count }` → label do select fica
+ * "Charles (3)" pra deixar claro quantos negócios o filtro vai pegar.
+ *
+ * Lista vem ordenada por contagem desc; "Sem responsável" e "Não informado"
+ * sempre no fim. Lógica em src/lib/filters.ts.
+ *
+ * O filtro EM SI é aplicado por `applyFilters()` em src/lib/filters.ts:
+ *   - responsavel: `n.responsavelNormalizado === filter`
+ *   - segmento:    `n.segmentoNormalizado === filter`
+ *   - from/to:     compara `n.dataCriacao.getTime()` com Date.getTime()
+ *
+ * Botão "Limpar" aparece só quando há filtro ativo. Fundo vermelho
+ * (COLORS.danger). Sem contador no label (decisão de UX de 2026-05-09).
+ */
+
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useTransition } from "react";
 import { COLORS } from "@/lib/constants";
